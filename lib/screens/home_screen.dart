@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chat_application_with_firebase/api/apis.dart';
+import 'package:chat_application_with_firebase/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -29,7 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
           //search user button
           IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
           //more features button
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+          IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (_) => ProfileScreen(user: list[0])));
+              },
+              icon: const Icon(Icons.more_vert)),
         ],
       ), //appbar completed
 
@@ -75,7 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       return ChatUserCard(user: list[index]);
                     });
               } else {
-                return const Center(child: Text("No connections Found!", style: TextStyle(fontSize: 20)));
+                return const Center(
+                    child: Text("No connections Found!",
+                        style: TextStyle(fontSize: 20)));
               }
           }
         },
