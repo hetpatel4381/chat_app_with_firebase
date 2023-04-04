@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../main.dart';
 import '../models/chat_user.dart';
@@ -25,8 +26,21 @@ class _ChatUserCardState extends State<ChatUserCard> {
           onTap: () {},
           child: ListTile(
             //user profile picture
-            leading: const CircleAvatar(
-              child: Icon(CupertinoIcons.person),
+            // leading: const CircleAvatar(
+            //   child: Icon(CupertinoIcons.person),
+            // ),
+
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(mq.height * .275),
+              child: CachedNetworkImage(
+                width: mq.height * .055,
+                height: mq.height * .055,
+                imageUrl: widget.user.image,
+                // placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const CircleAvatar(
+                  child: Icon(CupertinoIcons.person),
+                ),
+              ),
             ),
 
             //user name
@@ -39,10 +53,19 @@ class _ChatUserCardState extends State<ChatUserCard> {
             ),
 
             //last message time
-            trailing: const Text(
-              "12:00 PM",
-              style: TextStyle(color: Colors.black54),
+            trailing: Container(
+              height: 15,
+              width: 15,
+              decoration: BoxDecoration(
+                color: Colors.greenAccent.shade400,
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
+
+            // trailing: const Text(
+            //   "12:00 PM",
+            //   style: TextStyle(color: Colors.black54),
+            // ),
           )),
     );
   }

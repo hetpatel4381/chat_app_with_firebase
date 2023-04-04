@@ -54,6 +54,9 @@ dependencies:
   #for accessing cloud firestore database
   cloud_firestore: ^4.5.0
 
+  #cached_network_image to load into User card
+  cached_network_image: ^3.2.3
+
 flutter_icons:
   android: "ic_launcher"
   ios: true
