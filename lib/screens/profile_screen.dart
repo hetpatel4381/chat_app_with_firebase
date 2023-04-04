@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_application_with_firebase/api/apis.dart';
+import 'package:chat_application_with_firebase/screens/auth/login_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../helper/dialogs.dart';
 import '../main.dart';
 import '../models/chat_user.dart';
 
@@ -23,15 +25,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       //appbar
       appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(
-            Icons.arrow_back,
-            color: Colors.black45,
-          ),
-        ),
         title: const Text("Profile Screen"),
       ), //appbar completed
 
@@ -41,8 +34,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: FloatingActionButton.extended(
           backgroundColor: Colors.redAccent,
           onPressed: () async {
-            await APIs.auth.signOut();
-            await GoogleSignIn().signOut();
+            Dialogs.showProgressBar(context);
+            await APIs.auth.signOut().then((value) async {
+              await GoogleSignIn().signOut().then((value) {
+                //for hiding progress dialog
+                Navigator.pop(context);
+
+                //for moving to home screen
+                Navigator.pop(context);
+
+                //replacing home screen with login screen
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (_) => const LoginScreen()));
+              });
+            });
           },
           icon: const Icon(Icons.logout),
           label: const Text("Logout"),
@@ -59,18 +64,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(width: mq.width, height: mq.height * .03),
 
             //creating a profile pic of an user
-            ClipRRect(
-              borderRadius: BorderRadius.circular(mq.height * .1),
-              child: CachedNetworkImage(
-                width: mq.height * .2,
-                height: mq.height * .2,
-                fit: BoxFit.fill,
-                imageUrl: widget.user.image,
-                // placeholder: (context, url) => CircularProgressIndicator(),
-                errorWidget: (context, url, error) => const CircleAvatar(
-                  child: Icon(CupertinoIcons.person),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(mq.height * .1),
+                  child: CachedNetworkImage(
+                    width: mq.height * .2,
+                    height: mq.height * .2,
+                    fit: BoxFit.fill,
+                    imageUrl: widget.user.image,
+                    // placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => const CircleAvatar(
+                      child: Icon(CupertinoIcons.person),
+                    ),
+                  ),
                 ),
-              ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: MaterialButton(
+                    onPressed: () {},
+                    elevation: 1,
+                    color: Colors.white,
+                    shape: const CircleBorder(),
+                    child: const Icon(Icons.edit, color: Colors.blue),
+                  ),
+                ),
+              ],
             ),
 
             //for adding some space
@@ -85,11 +105,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               initialValue: widget.user.name,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.person, color: Colors.blue),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12)
-                ),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 hintText: "eg. Preet Patel",
-                label: const Text("name*"),                
+                label: const Text("name*"),
               ),
             ),
 
@@ -107,8 +126,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             SizedBox(height: mq.height * .05),
             ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(shape: const StadiumBorder(), minimumSize: Size(mq.width * .5, mq.height * .06)),
-              onPressed: (){}, icon: const Icon(Icons.edit, size: 28,), label: const Text("UPDATE", style: TextStyle(fontSize: 16),))
+                style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    minimumSize: Size(mq.width * .5, mq.height * .06)),
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.edit,
+                  size: 28,
+                ),
+                label: const Text(
+                  "UPDATE",
+                  style: TextStyle(fontSize: 16),
+                ))
           ],
         ),
       ),
