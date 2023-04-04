@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "139618013972",
+    "project_id": "zoto-chat",
+    "storage_bucket": "zoto-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139618013972:android:146767c86cce9428d6a801",
+        "android_client_info": {
+          "package_name": "com.example.chat_application_with_firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "139618013972-mt8a9nvgjm40tmt1esp4bajne621hshc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chat_application_with_firebase",
+            "certificate_hash": "2f7035cdccd0f885e0d63a56e4307a6213f06dc0"
+          }
+        },
+        {
+          "client_id": "139618013972-9b813ko3i8p1uljeoup7r148hno7499p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHaX0L8FC2e_Dfk8IsIAxifx0Vhk_t3_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "139618013972-9b813ko3i8p1uljeoup7r148hno7499p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "139618013972-r1v12q85crq9892k6j2tr6h01hgscppd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.chatApplicationWithFirebase"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

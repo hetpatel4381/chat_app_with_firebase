@@ -1,12 +1,22 @@
+import 'package:chat_application_with_firebase/firebase_options.dart';
 import 'package:chat_application_with_firebase/screens/auth/login_screen.dart';
-import 'package:chat_application_with_firebase/screens/home_screen.dart';
+import 'package:chat_application_with_firebase/screens/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 //global object for accessing device screen size
 late Size mq;
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+      .then((value) => {
+        _initializeFirebase(),
+        runApp(const MyApp()),
+      });
 }
 
 class MyApp extends StatelessWidget {
@@ -26,7 +36,13 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.white,
         ),
       ),
-      home: const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
+}
+
+_initializeFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
