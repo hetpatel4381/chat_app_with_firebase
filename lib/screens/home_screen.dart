@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chat_application_with_firebase/api/apis.dart';
 import 'package:chat_application_with_firebase/screens/profile_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -18,22 +19,66 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    APIs.getSelfInfo();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<ChatUser> list = [];
+    //for storing all items.
+    List<ChatUser> _list = [];
+
+    //for storing searched items.
+    final List<ChatUser> _searchList = [];
+
+    //for storing search status.
+    bool _isSearching = false;
 
     return Scaffold(
       //appbar
       appBar: AppBar(
-        leading: const Icon(Icons.home_outlined),
-        title: const Text("Zoto Chat"),
+        leading: const Icon(CupertinoIcons.home),
+        title: _isSearching
+            ? TextField(
+                decoration: const InputDecoration(
+                    border: InputBorder.none, hintText: "Name, Email, ..."),
+                style: TextStyle(fontSize: 17, letterSpacing: 0.5),
+                autofocus: true,
+                //when search text changes then update the text list
+                onChanged: (val) {
+                  //search logic is here
+                  _searchList.clear();
+                  for (var i in _list) {
+                    if (i.name.toLowerCase().contains(val.toLowerCase()) ||
+                        i.email.toLowerCase().contains(val.toLowerCase())) {
+                      _searchList.add(i);
+                    }
+                    setState(() {
+                      _searchList;
+                    });
+                  }
+                },
+              )
+            : const Text("Zoto Chat"),
         actions: [
           //search user button
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  _isSearching = !_isSearching;
+                });
+              },
+              icon: Icon(_isSearching
+                  ? CupertinoIcons.clear_circled_solid
+                  : Icons.search)),
           //more features button
           IconButton(
               onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => ProfileScreen(user: list[0])));
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => ProfileScreen(user: APIs.me)));
               },
               icon: const Icon(Icons.more_vert)),
         ],
@@ -54,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       //actual body starts here.
       body: StreamBuilder(
-        stream: APIs.firestore.collection('users').snapshots(),
+        stream: APIs.getAllUsers(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             //if data is loading
@@ -69,16 +114,16 @@ class _HomeScreenState extends State<HomeScreen> {
             case ConnectionState.done:
               final data = snapshot.data?.docs;
 
-              list =
+              _list =
                   data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
 
-              if (list.isNotEmpty) {
+              if (_list.isNotEmpty) {
                 return ListView.builder(
-                    itemCount: list.length,
+                    itemCount: _isSearching ? _searchList.length : _list.length,
                     padding: EdgeInsets.only(top: mq.height * .01),
                     physics: const BouncingScrollPhysics(),
                     itemBuilder: (context, index) {
-                      return ChatUserCard(user: list[index]);
+                      return ChatUserCard(user: _isSearching ? _searchList[index] : _list[index]);
                     });
               } else {
                 return const Center(
