@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:chat_application_with_firebase/api/apis.dart';
 import 'package:chat_application_with_firebase/screens/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,6 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
     APIs.getSelfInfo();
   }
 
+  //for storing search status.
+  bool _isSearching = false;
+
   @override
   Widget build(BuildContext context) {
     //for storing all items.
@@ -31,9 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     //for storing searched items.
     final List<ChatUser> _searchList = [];
-
-    //for storing search status.
-    bool _isSearching = false;
 
     return Scaffold(
       //appbar
@@ -43,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ? TextField(
                 decoration: const InputDecoration(
                     border: InputBorder.none, hintText: "Name, Email, ..."),
-                style: TextStyle(fontSize: 17, letterSpacing: 0.5),
+                style: const TextStyle(fontSize: 17, letterSpacing: 0.5),
                 autofocus: true,
                 //when search text changes then update the text list
                 onChanged: (val) {
