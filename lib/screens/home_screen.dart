@@ -28,10 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     //for storing all items.
-    List<ChatUser> _list = [];
+    List<ChatUser> list = [];
 
     //for storing searched items.
-    final List<ChatUser> _searchList = [];
+    final List<ChatUser> searchList = [];
 
     return GestureDetector(
       //for hiding keyboard when a tap is detected on screen
@@ -62,14 +62,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     //when search text changes then update the text list
                     onChanged: (val) {
                       //search logic is here
-                      _searchList.clear();
-                      for (var i in _list) {
+                      searchList.clear();
+                      for (var i in list) {
                         if (i.name.toLowerCase().contains(val.toLowerCase()) ||
                             i.email.toLowerCase().contains(val.toLowerCase())) {
-                          _searchList.add(i);
+                          searchList.add(i);
                         }
                         setState(() {
-                          _searchList;
+                          searchList;
                         });
                       }
                     },
@@ -128,16 +128,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 case ConnectionState.done:
                   final data = snapshot.data?.docs;
           
-                  _list =
+                  list =
                       data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
           
-                  if (_list.isNotEmpty) {
+                  if (list.isNotEmpty) {
                     return ListView.builder(
-                        itemCount: _isSearching ? _searchList.length : _list.length,
+                        itemCount: _isSearching ? searchList.length : list.length,
                         padding: EdgeInsets.only(top: mq.height * .01),
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return ChatUserCard(user: _isSearching ? _searchList[index] : _list[index]);
+                          return ChatUserCard(user: _isSearching ? searchList[index] : list[index]);
                         });
                   } else {
                     return const Center(
